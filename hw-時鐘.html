@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <title>clock</title>
+  <style>
+    * {
+      transition: 0.5s;
+      height: 100%;
+    }
+
+    body {
+      background: #000;
+      background-attachment: fixed;
+      font-family: 'Black Ops One', 'Noto Sans TC', sans-serif, cursive;
+    }
+
+    #hover {
+      width: 120px;
+      padding: 5px;
+      height: auto;
+      left: 50%;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+      background: #ccc;
+      font-size: 2rem;
+      cursor: pointer;
+      position: fixed;
+      transform: translate(-50%, -50%);
+    }
+
+    #hover:hover+#clockHour {
+      float: none;
+      display: inline-block;
+      transform: translateX(102%);
+    }
+
+    #hover:hover~#clockSecond {
+      float: none;
+      display: inline-block;
+      transform: translateX(-102%);
+    }
+
+    #clock {
+      width: 80%;
+      margin: auto;
+      text-align: center;
+    }
+
+    #clockHour,
+    #clockMinute,
+    #clockSecond {
+      width: 200px;
+      height: 200px;
+      top: 210px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    #clockHour {
+      float: left;
+      transition: 0.8s;
+      border: 4px solid rgb(9, 130, 0);
+      filter: drop-shadow(0 0 20px rgb(164, 255, 202)) drop-shadow(0 0 20px rgb(164, 255, 202));
+    }
+
+    #clockMinute {
+      display: inline-block;
+      border: 4px solid rgb(0, 115, 187);
+      filter: drop-shadow(0 0 20px rgb(167, 221, 255)) drop-shadow(0 0 20px rgb(167, 221, 255));
+    }
+
+    #clockSecond {
+      float: right;
+      transition: 0.8s;
+      border: 4px solid rgb(163, 14, 255);
+      filter: drop-shadow(0 0 20px rgb(220, 200, 255)) drop-shadow(0 0 20px rgb(220, 200, 255));
+      /* filter: hue-rotate(600deg); */
+    }
+
+    /* ---------------------- 指針 ------------------------- */
+
+    #hour,
+    #minute,
+    #second {
+      border-radius: 5px;
+      top: 50%;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50, -50%);
+    }
+
+    #hour {
+      width: 50px;
+      height: 5px;
+      background: rgb(9, 130, 0);
+      transform-origin: left center;
+    }
+
+    #minute {
+      width: 90px;
+      height: 5px;
+      background: rgb(0, 115, 187);
+      transform-origin: left center;
+    }
+
+    #second {
+      width: 100px;
+      height: 5px;
+      background: rgb(163, 14, 255);
+      transform-origin: left center;
+    }
+
+    #text {
+      height: 20%;
+    }
+
+    /* ---------------------- 日期時間 ------------------------- */
+    #text-date {
+      height: 30%;
+      float: left;
+      text-align: left;
+      margin: 5% 0 0 10%;
+    }
+
+    #today,
+    #time,
+    #week {
+      height: 120%;
+      font-size: 2rem;
+      color: #fff;
+    }
+
+
+    /* ---------------------- 天氣氣溫 ------------------------- */
+    #text-weather {
+      height: 30%;
+      float: right;
+      text-align: right;
+      margin: 5% 10% 0 0;
+    }
+
+    #city {
+      height: 50px;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      color: #fff;
+      background: #000;
+    }
+
+    #moment,
+    #MaxMinT,
+    #PoP,
+    #Wx {
+      height: 120%;
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    #PoP {
+      float: left;
+    }
+
+    #moment,
+    #Wx {
+      float: right;
+      margin-left: 20px;
+    }
+
+    /*捲軸寬度 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      margin-right: 2px;
+    }
+
+    /* 捲軸把手 */
+    ::-webkit-scrollbar-thumb {
+      background: gray;
+      border-radius: 1000px;
+    }
+
+    /* ---------------------- 刻度 ------------------------- */
+
+    #clockHour .scale {
+      width: 2px;
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      transform: rotate(30deg);
+      background: linear-gradient(rgb(164, 255, 202) 0% 5%, rgba(0, 0, 0, 0) 5% 95%, rgb(164, 255, 202) 95% 100%);
+      filter: drop-shadow(0 0 20px rgb(164, 255, 202)) drop-shadow(0 0 20px rgb(164, 255, 202));
+    }
+
+    #clockHour .scale::after {
+      content: '';
+      width: 2px;
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      transform: rotate(90deg);
+      background: linear-gradient(rgb(164, 255, 202) 0% 5%, rgba(0, 0, 0, 0) 5% 95%, rgb(164, 255, 202) 95% 100%);
+      filter: drop-shadow(0 0 20px rgb(164, 255, 202)) drop-shadow(0 0 20px rgb(164, 255, 202));
+    }
+
+    #clockMinute .scale {
+      width: 2px;
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      background: linear-gradient(rgb(167, 221, 255) 0% 8%, rgba(0, 0, 0, 0) 8% 92%, rgb(167, 221, 255) 92% 100%);
+      filter: drop-shadow(0 0 20px rgb(167, 221, 255)) drop-shadow(0 0 20px rgba(102, 143, 169));
+    }
+
+    #clockMinute .scale::after {
+      content: '';
+      width: 2px;
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      transform: rotate(90deg);
+      background: linear-gradient(rgb(167, 221, 255) 0% 8%, rgba(0, 0, 0, 0) 8% 92%, rgb(167, 221, 255) 92% 100%);
+      filter: drop-shadow(0 0 20px rgb(167, 221, 255)) drop-shadow(0 0 20px rgb(167, 221, 255));
+    }
+
+    #clockSecond .scale {
+      width: 2px;
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      transform: rotate(60deg);
+      background: linear-gradient(rgb(220, 200, 255) 0% 5%, rgba(0, 0, 0, 0) 5% 95%, rgb(220, 200, 255) 95% 100%);
+    }
+
+    #clockSecond .scale::after {
+      content: '';
+      width: 2px;
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      transform: rotate(90deg);
+      background: linear-gradient(rgb(220, 200, 255) 0% 5%, rgba(0, 0, 0, 0) 5% 95%, rgb(220, 200, 255) 95% 100%);
+      filter: drop-shadow(0 0 20px rgb(220, 200, 255)) drop-shadow(0 0 20px rgb(220, 200, 255));
+    }
+  </style>
+</head>
+
+<body>
+  <div id="text">
+    <div id="text-date">
+      <div id="today"></div>
+      <div id="time"></div>
+      <div id="week"></div>
+    </div>
+
+    <div id="text-weather">
+      <div id="moment"></div>
+      <select name="" id="city">
+        <option value="--">--</option>
+      </select>
+      <!-- 溫度 -->
+      <div id="MaxMinT"></div>
+      <!-- 降雨機率 -->
+      <div id="PoP"></div>
+      <!-- 概況 -->
+      <div id="Wx"></div>
+    </div>
+  </div>
+
+  <div id="clock">
+    <div id="hover">hover</div>
+
+    <div id="clockHour">
+      <div id="hour"></div>
+      <div class="scale"></div>
+    </div>
+
+    <div id="clockMinute">
+      <div id="minute"></div>
+      <div class="scale"></div>
+    </div>
+
+    <div id="clockSecond">
+      <div id="second"></div>
+      <div class="scale"></div>
+    </div>
+  </div>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js'
+    integrity='sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg=='
+    crossorigin='anonymous'></script>
+  <script>
+    const hour = document.getElementById('hour')
+    const minute = document.getElementById('minute')
+    const second = document.getElementById('second')
+    const today = document.getElementById('today')
+    const time = document.getElementById('time')
+    const day = document.getElementById('day')
+    const MaxMinT = document.getElementById('MaxMinT')
+    const PoP = document.getElementById('PoP')
+    const Wx = document.getElementById('Wx')
+    const city = document.getElementById('city')
+    const weeks = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+    const moments = ['今日白天', '今晚明晨', '明日白天']
+
+    // befor 新增在 div 之前
+    time.insertAdjacentHTML('beforeend', '<h1>beforeend')
+
+    setInterval(() => {
+      const date = new Date()
+      // rotate 為 時鐘指針
+      hour.style.transform = `rotate(${date.getHours() * 30 - 90}deg)`
+      minute.style.transform = `rotate(${date.getMinutes() * 6 - -90}deg)`
+      second.style.transform = `rotate(${date.getSeconds() * 6 - 90}deg)`
+      // 解決到整點時會逆時針轉一圈的 bug
+      if (date.getHours() * 30 - 90 === -90) hour.style.transition = '0s'
+      else hour.style.transition = '0.5s'
+      if (date.getMinutes() * 6 - 90 === -90) minute.style.transition = '0s'
+      else minute.style.transition = '0.5s'
+      if (date.getSeconds() * 6 - 90 === -90) second.style.transition = '0s'
+      else second.style.transition = '0.5s'
+
+      // .padStart 將 數值(月、時、分、秒) 改為兩位數(個位數則補 0)
+      let Hour = parseInt((date.getHours() - 12).toString().padStart(2, '0'))
+      let Minute = date.getMinutes().toString().padStart(2, '0')
+      let Sec = date.getSeconds().toString().padStart(2, '0')
+      let Month = (date.getMonth() + 1).toString().padStart(2, '0')
+      let Dates = date.getDate().toString().padStart(2, '0')
+      // 在 小時 前加上AM PM
+      Hour = (Hour + 12) < 12 ? 'A.M. ' + (Hour + 12) : 'P.M. ' + Hour
+      today.innerText = date.getFullYear() + ' / ' + Month + ' / ' + Dates
+      time.innerText = Hour + " : " + Minute + " : " + Sec
+      week.innerText = weeks[date.getDay()]
+    }, 1000)
+
+    /* ---------------------- 溫度 ------------------------- */
+    axios.get('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-B420A4FB-B72F-466D-92D4-20E6D47260A5')
+      .then(({ data }) => {
+        for (let i = 0; i < data.records.location.length; i++) {
+          city.insertAdjacentHTML('beforeend', `<option class="option" value="${data.records.location[i].locationName}">${data.records.location[i].locationName}</option>`)
+        }
+        // 沒選擇城市時預設天氣顯示為新北市
+        let selectCity = data.records.location[1]
+        textWeather()
+
+        function textWeather() {
+          // 顯示天氣概況溫度
+          for (i = 0; i < selectCity.weatherElement[1].time.length; i++) {
+            // api 資料日期區間
+            let startTime = new Date(selectCity.weatherElement[2].time[i].startTime).toLocaleString()
+            let endTime = new Date(selectCity.weatherElement[2].time[i].endTime).toLocaleString()
+            let nowTime = new Date().toLocaleString()
+            // 最高溫度 ~ 最低溫度
+            moment.innerText = moments[i]
+            MaxMinT.innerText = selectCity.weatherElement[2].time[i].parameter.parameterName + ' °C ~ ' +
+              selectCity.weatherElement[4].time[i].parameter.parameterName + ' °C'
+            // 天氣概況
+            PoP.innerText = selectCity.weatherElement[0].time[i].parameter.parameterName
+            // 降雨機率
+            Wx.innerText = '☂  ' + selectCity.weatherElement[1].time[i].parameter.parameterName + ' %'
+            if (Wx.innerText !== '') break
+          }
+        }
+        // 選擇的城市
+        city.onclick = () => {
+          for (i = 0; i < data.records.location.length; i++) {
+            if (data.records.location[i].locationName === city.value)
+              selectCity = data.records.location[String(i)]
+          }
+          textWeather()
+        }
+      })
+  </script>
+</body>
+
+</html>
